@@ -1,0 +1,3 @@
+spellTable = {
+    s
+}
