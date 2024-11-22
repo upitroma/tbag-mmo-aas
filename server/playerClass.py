@@ -6,6 +6,8 @@ import array
 
 from spellTable import spellTable
 
+from map import rooms
+
 load_dotenv()
 
 SECRET_TOKEN = os.getenv("SECRET_TOKEN")
@@ -22,7 +24,7 @@ def base64_url_decode(input):
 
 
 def randomSpawnLocation():
-    return (random.randint(0,100))
+    return random.randint(0,len(rooms)-1)
 
 
 def pack_player_data(player_data):
@@ -153,6 +155,17 @@ class Player:
             "spells": self.spells,
             "currentRoomId": self.currentRoomId
         }
+    
+    def getPossibleActions(self):
+        actions = []
+        paths = rooms[self.currentRoomId]["paths"]
+        for path in paths:
+            actions.append({
+                "action":"travel towards " + path["description"],
+                "path":"/move?destination=" + str(path["id"]) + "&save=" + self.save()
+            })
+
+        return actions
 
     def save(self):
         packed_data = pack_player_data(self.getPlayerInfo())

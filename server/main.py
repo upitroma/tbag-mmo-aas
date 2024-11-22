@@ -21,10 +21,5 @@ def new_character():
     return jsonify(newCharacter(request.args.get('name')))
 
 
-@app.route('/api', methods=['POST'])
-def post_data():
-    data = request.json
-    return jsonify({'received': data}), 201
-
 if __name__ == '__main__':
     app.run(debug=True)

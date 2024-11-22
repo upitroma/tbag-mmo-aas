@@ -45,10 +45,5 @@ def newCharacter(name):
         "gameState": "explore",
         "flavor": "Venture forth, "+player.name+"!",
         "playerInfo": player.getPlayerInfo(),
-        "options": [
-            {
-                "action":"walk forward",
-                "path":"/move?save="+player.save()
-            }
-        ]
+        "options": player.getPossibleActions()
     }
