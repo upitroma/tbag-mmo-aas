@@ -1,4 +1,5 @@
 from playerClass import Player, generateNewPlayerSave
+import json
 
 def newCharacter(name):
     # validate name
@@ -43,6 +44,7 @@ def newCharacter(name):
     return {
         "gameState": "explore",
         "flavor": "Venture forth, "+player.name+"!",
+        "playerInfo": player.getPlayerInfo(),
         "options": [
             {
                 "action":"walk forward",
