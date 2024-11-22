@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from characterCreation import characterCreation
 from newCharacter import newCharacter
 from movement import moveToDestination
 
 app = Flask(__name__)
+CORS(app)
 
 # home page
 @app.route('/', methods=['GET'])

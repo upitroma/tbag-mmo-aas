@@ -16,7 +16,7 @@ rooms = {
     2:{
         "description":"a small patch of forest with an abandoned tent",
         "paths":[
-            {"description":"small patch of forest","id":1},
+            {"description":"open field","id":1},
             {"description":"rocky patch","id":3},
             {"description":"dense woods","id":4},
             {"description":"large open field","id":6}
