@@ -4,6 +4,8 @@ from base64 import b64encode, b64decode
 
 import array
 
+from spellTable import spellTable
+
 load_dotenv()
 
 SECRET_TOKEN = os.getenv("SECRET_TOKEN")
@@ -38,17 +40,29 @@ def pack_player_data(player_data):
         player_data["charisma"]
     ])
 
+    # Pack spell ids as bytes (unsigned 8-bit)
+    spellIds = []
+    for spell in player_data["spells"]:
+        spellIds.append(spellTable[spell]["id"])
+    spellIds = array.array('B', spellIds)
+
     # Include other data (strings, lists) as-is
     return [
         player_data["playerId"],
         player_data["name"],
         base64_url_encode(stats),  # encoded stats
-        player_data["spells"],
+        base64_url_encode(spellIds), # encoded spell ids
         player_data["currentRoomId"]
     ]
 
 def unpack_player_data(data):
     stats = array.array('B', base64_url_decode(data[2]))
+    spellIds = array.array('B', base64_url_decode(data[3]))
+    spells = []
+    spellIdToName = {spell["id"]: key for key, spell in spellTable.items()}
+    for spellId in spellIds:
+        spells.append(spellIdToName[spellId])
+        
     return {
         "playerId": data[0],
         "name": data[1],
@@ -62,7 +76,7 @@ def unpack_player_data(data):
         "intelligence": stats[7],
         "wisdom": stats[8],
         "charisma": stats[9],
-        "spells": data[3],
+        "spells": spells,
         "currentRoomId": data[4]
     }
 
@@ -80,7 +94,7 @@ def generateNewPlayerSave(name):
         "intelligence": 10,
         "wisdom": 10,
         "charisma": 10,
-        "spells": [],
+        "spells": ["spark","rest","mend"],
         "currentRoomId": randomSpawnLocation()
     }
 
