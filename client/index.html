@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Adventure Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .game-container {
+            max-width: 800px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .player-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #2b2b2b;
+            border: 1px solid #3c3c3c;
+            border-radius: 5px;
+        }
+        .flavor-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .action-button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #6200ea;
+            color: #ffffff;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .action-button:hover {
+            background-color: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="player-info" class="player-info">
+            <!-- Player Info will be displayed here -->
+        </div>
+        <div id="flavor-text" class="flavor-text">
+            <!-- Flavor text goes here -->
+        </div>
+        <div id="actions" class="actions">
+            <!-- Action buttons will be dynamically added here -->
+        </div>
+    </div>
+
+    <script>
+        async function fetchGameData(path = "/new-character?name=upitroma") {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000${path}`);
+                const data = await response.json();
+                displayGameData(data);
+            } catch (error) {
+                console.error("Error fetching game data:", error);
+                alert("An error occurred while fetching the game data.");
+            }
+        }
+
+        function displayGameData(data) {
+            const flavorText = document.getElementById("flavor-text");
+            flavorText.textContent = data.flavor;
+
+            const playerInfo = document.getElementById("player-info");
+            playerInfo.innerHTML = `
+                <strong>${data.playerInfo.name}</strong> | Health: ${data.playerInfo.health}/${data.playerInfo.maxHealth} | Mana: ${data.playerInfo.mana}/${data.playerInfo.maxMana}
+                <br>STR: ${data.playerInfo.strength} | DEX: ${data.playerInfo.dexterity} | CON: ${data.playerInfo.constitution} | INT: ${data.playerInfo.intelligence} | WIS: ${data.playerInfo.wisdom} | CHA: ${data.playerInfo.charisma}
+                <br>Spells: ${data.playerInfo.spells.join(", ")}
+            `;
+
+            const actionsContainer = document.getElementById("actions");
+            actionsContainer.innerHTML = "";
+            data.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option.action;
+                button.className = "action-button";
+                button.onclick = () => fetchGameData(option.path);
+                actionsContainer.appendChild(button);
+            });
+        }
+
+        fetchGameData();
+    </script>
+</body>
+</html>
