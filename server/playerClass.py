@@ -156,6 +156,9 @@ class Player:
             "currentRoomId": self.currentRoomId
         }
     
+    def getReachableRoomIds(self):
+        return [room["id"] for room in rooms[self.currentRoomId]["paths"]]
+    
     def getPossibleActions(self):
         actions = []
         paths = rooms[self.currentRoomId]["paths"]
